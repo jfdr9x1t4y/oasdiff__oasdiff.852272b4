@@ -58,7 +58,7 @@ func RequestPropertyDeprecationCheck(diffReport *diff.Diff, operationsSources *d
 						propBaseSource, propRevisionSource := SchemaFieldSources(operationsSources, operationItem, propertyDiff, "deprecated")
 
 						// Check if property was reactivated (un-deprecated)
-						if propertyDiff.DeprecatedDiff.To == nil {
+						if propertyDiff.DeprecatedDiff.To == nil || propertyDiff.DeprecatedDiff.To == false {
 							result = append(result, NewApiChange(
 								RequestPropertyReactivatedId,
 								config,
@@ -76,7 +76,7 @@ func RequestPropertyDeprecationCheck(diffReport *diff.Diff, operationsSources *d
 						sunset, ok := getSunset(propertyDiff.Revision.Extensions)
 						if !ok {
 							// if deprecation policy is defined and sunset is missing, it's a breaking change
-							if deprecationDays >= 0 {
+							if deprecationDays > 0 {
 								result = append(result, NewApiChange(
 									RequestPropertyDeprecatedSunsetMissingId,
 									config,
@@ -120,7 +120,7 @@ func RequestPropertyDeprecationCheck(diffReport *diff.Diff, operationsSources *d
 
 						days := date.DaysSince(civil.DateOf(time.Now()))
 
-						if days <= int(deprecationDays) {
+						if days < int(deprecationDays) {
 							result = append(result, NewApiChange(
 								RequestPropertySunsetDateTooSmallId,
 								config,

